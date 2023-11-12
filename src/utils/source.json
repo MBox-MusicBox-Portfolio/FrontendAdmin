@@ -1,0 +1,11 @@
+{
+    "Auth": {
+        "register": "http://localhost/api/auth/register",
+        "login": "http://localhost/api/auth/login",
+        "logout": "http://localhost/api/auth/logout"
+    },
+
+    "Users": {
+        "user_pagination": "http://localhost/api/admin/users/pagination"
+    }
+}
