@@ -12,12 +12,12 @@ import * as cookie from "typescript-cookie";
  *  -- lax    => Куки будут отправляться в том случае, если запрос идет с другого сайта, но только если это "безопасное" навигационное действие, такое как переход по ссылке
  *  -- none   => Безопасность отсутствует . Отправка куки небезопасная 
 */ 
-export async function SetCookie(key: string, value: string ): Promise<void> {
+export function SetCookie(key: string, value: string ): void {
   try {
-    if (typeof value === 'string'){
-      await cookie.setCookie(key, "Bearer "+value, {secure:true, expires: 90, samesite: 'strict'}); 
-    }else {
-      console.error("Cookie utils ::: SetCookie function : Empty or invalid params");
+    if(!GetCookie(key))
+    {
+      console.log("SetCookie func: " + GetCookie(key));
+      cookie.setCookie(key, "Bearer "+value, {secure:true, expires: 90, samesite: 'strict'}) 
     }
   } catch (err) {
       console.error("Cookie utils ::: SetCookie function:", err);
@@ -29,31 +29,30 @@ export async function SetCookie(key: string, value: string ): Promise<void> {
  * @param key  -- имя ключа
  * @returns 
  */
-export async function GetCookie(key : string) {
+export function GetCookie(key : string): any {
 try{
-   const cookies = await cookie.getCookie(key);
-   if(cookie !== null || cookie !== undefined)
+   const cookies =  cookie.getCookie(key);
+   if(cookies !== undefined)
    {
-      return cookie;
+      return cookies;
    }else{
-      console.error("Cookie utils ::: GetCookie function : " , `${"Empty params "}`); 
+      return false; 
    }
   }catch(err){
       console.error("Cookie utils ::: GetCookie function : " , `${err}`); 
-}
-  
+  }
 }
 
 /**
  * Удаляет cookie
  * @param key  -- имя ключа
  */
-export async function RemoveCoockie(key : string) {
+export function RemoveCookie(key : string) : void {
  try{
-  const cookies = await cookie.getCookie(key);
+  const cookies = cookie.getCookie(key);
   if(cookies !== null || cookies !== undefined)
   {
-    await cookie.removeCookie(key);
+      cookie.removeCookie(key);
   }else{
     console.error("Cookie utils ::: GetCookie function : " , `${"Empty params"}`); 
   }

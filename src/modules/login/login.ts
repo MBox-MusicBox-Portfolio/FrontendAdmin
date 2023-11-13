@@ -2,6 +2,7 @@ import {Component, Vue} from 'vue-facing-decorator';
 import { jwtDecode } from 'jwt-decode';
 import * as cookies from '../../utils/cookies'
 import Input from '@/components/input/input.vue';
+import authModule from '@/store/auth';
 import {useToast} from 'vue-toastification';
 import {PfButton, PfCheckbox} from '@profabric/vue-components';
 import {GoogleProvider, authLogin, facebookLogin} from '@/utils/oidc-providers';
@@ -39,9 +40,9 @@ export default class Login extends Vue {
             this.isAuthLoading = true;
             const response = await Auth(this.email, this.password);
             if(await this.checkUserRole(response.data.token) === true){
-                await cookies.SetCookie("JWTAdminKey", response.data.token); 
+                cookies.SetCookie("JWTAdminKey", response.data.token); 
                 this.toast.success("Login succeeded!") 
-                this.$store.dispatch('auth/setAuthentication', response);
+                this.$store.dispatch('auth/setAuthentication', response.data.token);
                 this.isAuthLoading = false;
                 this.$router.replace('/admin/');
             }else{
@@ -82,6 +83,11 @@ export default class Login extends Vue {
             this.isGoogleLoading = false;
         }
     }
+    /**
+     * Проверяет роль вошедшего пользователя 
+     * @param token 
+     * @returns true or false 
+     */
     public async checkUserRole(token: string): Promise<boolean> {
         try {
           if (token !== null && token !== undefined) {
