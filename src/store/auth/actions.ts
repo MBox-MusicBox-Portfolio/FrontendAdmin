@@ -3,3 +3,5 @@ export default {
         context.commit('setAuthentication', payload);
     }
 };
+
+

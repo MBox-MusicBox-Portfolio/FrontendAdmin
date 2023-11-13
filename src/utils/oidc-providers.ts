@@ -67,6 +67,7 @@ export const getFacebookLoginStatus = () => {
 };
 
 export const authLogin = (email: string, password: string) => {
+    console.log("auth")
     return new Promise(async (res, rej) => {
         await sleep(500);
         if (email === 'admin@example.com' && password === 'admin') {
