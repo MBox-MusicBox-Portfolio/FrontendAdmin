@@ -1,11 +1,11 @@
 import {Component, Vue} from 'vue-facing-decorator';
-
+import * as cookies from '../../utils/cookies'
 import Input from '@/components/input/input.vue';
 import {useToast} from 'vue-toastification';
 import {PfButton, PfCheckbox} from '@profabric/vue-components';
 import {GoogleProvider, authLogin, facebookLogin} from '@/utils/oidc-providers';
 import { Auth } from '@/utils/axios';
-import { SetItem } from '@/utils/localeStorage';
+import { SetItem } from '@/utils/cookies';
 
 @Component({
     components: {
@@ -37,11 +37,7 @@ export default class Login extends Vue {
         try {
             this.isAuthLoading = true;
             const response = await Auth(this.email, this.password);
-            /*
-            Object.entries(response).forEach(item=>{
-                console.log(item);
-            }) */
-            SetItem("JWTAdminKey", response.data.token); 
+            await cookies.SetCookie("JWTAdminKey", response.data.token); 
             this.$store.dispatch('auth/setAuthentication', response);
             this.toast.success('Login succeeded');
             this.isAuthLoading = false;
