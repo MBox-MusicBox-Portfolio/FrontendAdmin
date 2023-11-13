@@ -14,14 +14,13 @@ import * as cookie from "typescript-cookie";
 */ 
 export async function SetCookie(key: string, value: string ): Promise<void> {
   try {
-    if (typeof value === 'string') {
-      
+    if (typeof value === 'string'){
       await cookie.setCookie(key, "Bearer "+value, {secure:true, expires: 90, samesite: 'strict'}); 
-    } else {
+    }else {
       console.error("Cookie utils ::: SetCookie function : Empty or invalid params");
     }
   } catch (err) {
-    console.error("Cookie utils ::: SetCookie function:", err);
+      console.error("Cookie utils ::: SetCookie function:", err);
   }
 }
 
@@ -61,19 +60,4 @@ export async function RemoveCoockie(key : string) {
  }catch(err){
     console.error("Cookie utils ::: GetCookie function : " , `${err}`); 
  } 
-}
-
-export function SetItem(key: string,value: string) {
-    console.log("SetItem says: " + "Bearer " +JSON.stringify(value));
-    localStorage.setItem(key, "Bearer " + JSON.stringify(value));
-}
-
-export function RemoveItem(key: string) {
-    localStorage.removeItem(key);
-}
-
-export function GetItem(key: string) {
-    var value = localStorage.getItem(key);
-    if (value !== null) return value;
-    return null;
 }
