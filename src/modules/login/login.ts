@@ -1,11 +1,12 @@
 import {Component, Vue} from 'vue-facing-decorator';
+import { jwtDecode } from 'jwt-decode';
 import * as cookies from '../../utils/cookies'
 import Input from '@/components/input/input.vue';
 import {useToast} from 'vue-toastification';
 import {PfButton, PfCheckbox} from '@profabric/vue-components';
 import {GoogleProvider, authLogin, facebookLogin} from '@/utils/oidc-providers';
 import { Auth } from '@/utils/axios';
-import { SetItem } from '@/utils/cookies';
+
 
 @Component({
     components: {
@@ -37,11 +38,17 @@ export default class Login extends Vue {
         try {
             this.isAuthLoading = true;
             const response = await Auth(this.email, this.password);
-            await cookies.SetCookie("JWTAdminKey", response.data.token); 
-            this.$store.dispatch('auth/setAuthentication', response);
-            this.toast.success('Login succeeded');
-            this.isAuthLoading = false;
-            this.$router.replace('/admin/');
+            if(await this.checkUserRole(response.data.token) === true){
+                await cookies.SetCookie("JWTAdminKey", response.data.token); 
+                this.toast.success("Login succeeded!") 
+                this.$store.dispatch('auth/setAuthentication', response);
+                this.isAuthLoading = false;
+                this.$router.replace('/admin/');
+            }else{
+                this.toast.error("Action denied! Your server role must be higher than user!")
+                this.isAuthLoading = false;
+                this.$router.replace('/admin/login')
+            }
         } catch (error: any) {
             this.toast.error(error.message);
             this.isAuthLoading = false;
@@ -75,15 +82,20 @@ export default class Login extends Vue {
             this.isGoogleLoading = false;
         }
     }
-
-    public async checkUserRole(token:string) : Promise<void>{
-        try{
-          if(token !== null && token !== undefined)
-          {
-            
+    public async checkUserRole(token: string): Promise<boolean> {
+        try {
+          if (token !== null && token !== undefined) {
+            const decode = JSON.parse(JSON.stringify(await jwtDecode(token)));
+              if(decode.Role === "admin"){
+                 return true
+              } else{
+                 return false; 
+              }
+          } else {
+            console.error("Login modules ::: checkUserRole function : Empty params");
           }
-        }catch{
-
-        } 
-    }
+        } catch (error) {
+           console.error("Login modules ::: checkUserRole function :", error);
+        }
+      }
 }
