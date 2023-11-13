@@ -1,4 +1,3 @@
-import { bool, boolean, date, string } from "yup";
 import * as cookie from "typescript-cookie";
  
 /**
@@ -6,11 +5,18 @@ import * as cookie from "typescript-cookie";
  * @param key -- имя ключа
  * @param value  -- значение
  * @param options  -- опции 
- */
+ * Объект options: 
+ * Свойство secure и его значения : true/false . Куки отправляются лишь тогда, когда сайт использует HTTPS протокол. 
+ * Свойство samesite и его значения: 
+ *  -- strict => Куки не будут отправляться при запросах с других доменов.
+ *  -- lax    => Куки будут отправляться в том случае, если запрос идет с другого сайта, но только если это "безопасное" навигационное действие, такое как переход по ссылке
+ *  -- none   => Безопасность отсутствует . Отправка куки небезопасная 
+*/ 
 export async function SetCookie(key: string, value: string ): Promise<void> {
   try {
     if (typeof value === 'string') {
-      await cookie.setCookie(key, value, {secure:true, expires: 90});
+      
+      await cookie.setCookie(key, "Bearer "+value, {secure:true, expires: 90, samesite: 'strict'}); 
     } else {
       console.error("Cookie utils ::: SetCookie function : Empty or invalid params");
     }

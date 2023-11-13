@@ -75,4 +75,15 @@ export default class Login extends Vue {
             this.isGoogleLoading = false;
         }
     }
+
+    public async checkUserRole(token:string) : Promise<void>{
+        try{
+          if(token !== null && token !== undefined)
+          {
+            
+          }
+        }catch{
+
+        } 
+    }
 }
