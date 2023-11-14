@@ -12,7 +12,7 @@
                         <div class="modal-body">
                             <div>
                                 <!-- Edit Status-->
-                                <p class="text-edit-label m-0">Status</p>
+                                <p class="text-edit-label m-0">Role</p>
                                 <select
                                     id="testSelect"
                                     class="mb-3 mt-1 pl-2 form-select form-select-sm"
@@ -55,7 +55,7 @@ export default {
     },
     methods: {
         CloseModal() {
-            
+
         },
         OpenModal() {
             let modalShow = new Modal(
