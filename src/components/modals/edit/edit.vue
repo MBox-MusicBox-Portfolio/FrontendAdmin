@@ -6,7 +6,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <p class="modal-title text-title-modal">
-                                Edit user: {{ userName }}
+                                Current User: {{ userName }}
                             </p>
                         </div>
                         <div class="modal-body">
@@ -54,8 +54,9 @@ export default {
         userStatus: String
     },
     methods: {
-        SaveModalInformation() {},
-        CloseModal() {},
+        CloseModal() {
+            
+        },
         OpenModal() {
             let modalShow = new Modal(
                 document.getElementById('modal-edit'),
