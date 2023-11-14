@@ -28,13 +28,13 @@ export async function Auth(email: string, password: string) {
 export async function AllUsers(page: Number, size: Number) {
   let config = {
     headers: { 
-      'Authorization': cookie.GetCookie("JWTAdminKey")
+      'Authorization': cookie.GetCookie("JWTAdminKey") as string
     }
   };
    
   console.log("ALLUSERS MODULES " + config.headers.Authorization);
   const response = await axios.get(SourceJson.Users.user_pagination + `?Page=${page}&Size=${size}`, config);
-  console.log(response.data);
+  const result = response.data;
   return response;
 }
 
