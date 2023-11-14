@@ -13,11 +13,11 @@
                     class="list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-2"
                 >
                     <div class="d-flex">
-                        <p class="mt-2 mr-2 text-darl">{{ item.index }}</p>
-                        <p class="mt-2 text-user-name">{{ item.name }}</p>
-                        <p class="mt-2 ml-4 text-secondary text-status">
-                            Status: <span :class="itemStatusColor(item.index)">{{ item.status }}</span>
-                        </p>
+                        <img :src="item.avatar" class="img-fluid rounded-circle user-image" alt="Responsive image">
+                        <p class="mt-3 p-3 mr-3 ml-5 text-center text-darl"> {{ item.index }}</p>
+                        <p class="mt-3 p-3 text-center text-user-name">{{ item.name }}</p>
+                        <p class="mt-3 p-3 mr-3 ml-5 text-center text-user-name">{{ "Role: " + item.role.name }}</p>
+                        <p class="mt-3 p-3 mr-3 ml-5 text-center">{{ "Email: " + item.email }}</p>
                     </div>
                     <div>
                         <button
@@ -38,26 +38,33 @@
 <script>
 import editVue from '../../components/modals/edit/edit.vue';
 import UserStatus from '../../json/UserStatus.json';
-import { AllUsers } from '../../utils/axios';
+import {AllUsers}  from '../../utils/axios';
 
 export default {
     data() {
         return {
             searchText: '',
-            UserList: [
-                {index: 0, name: 'Slesh', status: 'User'},
-                {index: 1, name: 'Abdul', status: 'Musician'},
-                {index: 2, name: 'Greka', status: 'Producer'},
-                {index: 3, name: 'Romanov', status: 'Blocked'},
-                {index: 4, name: 'Breake', status: 'Admin'},
-            ]
+            UserList: ""
         }
     },
+    beforeRouteEnter(to, from, next) {
+      next(vm => vm.loadUser())
+  },
     methods: {
+        async loadUser() {
+        try {
+        const response = await AllUsers(1, 100);
+        const data = response.data.value;
+        this.UserList=JSON.parse(JSON.stringify((Object.values(data))));
+        console.log(data);
+         
+    } catch (error) {
+        console.error("Error loading user data:", error);
+    }
+    },
         editUser() {
-            const response = AllUsers(1,1);
-            console.log(response);
-            editVue.methods.OpenModal();
+            const response = AllUsers(1,100);
+            
         },
     },
     components: {
