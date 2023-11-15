@@ -6,13 +6,13 @@
         <input type="text" class="form-control mt-3 mb-3" placeholder="Search user..." v-model="searchText" />
       </div>
       <div>
-        <!-- List-->
+      
         <ul class="list-group ml-2 mr-2">
           <li v-for="item in filteredUsers" :key="item.id" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-2">
             <div class="d-flex align-items-center">
               <img :src="item.avatar" class="img-fluid rounded-circle user-image" alt="Avatar" />
               <div class="ml-3">
-                <p class="mb-1 user-name">{{ item.name }}</p>
+                <p class="mb-1 fw-bold user-name">{{ item.name }}</p>
                 <p class="mb-1 text-dark">{{ "Role: " + item.role.name }}</p>
                 <p class="mb-1 text-dark">{{ "Email: " + item.email }}</p>
                 <p class="mb-1 text-dark">{{ "Status: " + (item.isBlocked ? 'Blocked' : 'Active') }}</p>
@@ -31,7 +31,7 @@
   <script>
   import editVue from '../../components/modals/edit/edit.vue';
   import UserStatus from '../../json/UserStatus.json';
-  import { AllUsers } from '../../utils/axios';
+  import * as request from '../../utils/axios';
   
   export default {
     data() {
@@ -49,18 +49,36 @@
     methods: {
       async loadUser() {
         try {
-          const response = await AllUsers(1, 100);
+          const response = await request.UserPagination(1,100);
           this.UserList = response.data.value || [];
+          //await this.setDefaultImage();
         } catch (error) {
           console.error("Error loading user data:", error);
         }
       },
       editUser(item) {
-        this.selectedUserId= item.id;
-        this.selectedUserName =item.name;
+        this.selectedUserId = item.id;
+        this.selectedUserName = item.name;
         this.$refs.editVueRef.OpenModal();
-        console.log("Id:"+this.selectedUserId);
       },
+      /*
+      async setDefaultImage()
+      {
+       // const response = await getUserLetters(this.getArray());
+       this.getArray();
+        //console.log(response);
+     },
+     getArray(){
+       this.UserList.forEach(items=>{
+         if(items.avatar === null)
+         {
+            return {
+              name: items.name,
+              avatar: items.avatar
+            }
+         }
+       })
+     }*/
     },
     components: {
       editVue,
