@@ -14,6 +14,4 @@ const authModule: IAuthModule = {
     getters
 };
 
-console.log("authModule" + authModule.state.authentication);
-
 export default authModule;

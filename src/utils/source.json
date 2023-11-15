@@ -4,8 +4,16 @@
         "login": "http://localhost/api/auth/login",
         "logout": "http://localhost/api/auth/logout"
     },
-
+    "DefaultUserImage":{
+       "source": "https://ui-avatars.com/api/?name="
+    },
     "Users": {
         "user_pagination": "http://localhost/api/admin/users/pagination"
+    },
+    "RolePagination":{
+        "role_pagination": "http://localhost/api/admin/role/pagination"
+    },
+    "ChangeRole":{
+        "userRoleChange":"http://localhost/api/admin/"
     }
 }
