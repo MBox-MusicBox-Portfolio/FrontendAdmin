@@ -92,7 +92,7 @@ export default class Login extends Vue {
         try {
           if (token !== null && token !== undefined) {
             const decode = JSON.parse(JSON.stringify(await jwtDecode(token)));
-              if(decode.Role === "admin"){
+              if(decode.Role === "admin" || decode.Role === "super_admin"){
                  return true
               } else{
                  return false; 

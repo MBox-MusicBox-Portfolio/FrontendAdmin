@@ -5,9 +5,9 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <p class="modal-title text-title-modal">
-                                Current User: {{ userName }}
-                            </p>
+                            <img :src="photo" class="img-fluid rounded-circle user-image" alt="Avatar" />
+                            <p class="fw-bold user-name ">User: {{ userName }}</p>
+                            <p class="fw-bold role">Role:{{ currentRoleName}}</p>
                         </div>
                         <div class="modal-body">
                             <div>
@@ -20,7 +20,7 @@
                                 </select>
                             </div>
                             <div class="d-flex justify-content-end">
-                                <button class="mr-2 btn btn-primary" @click="Change()">Change</button>
+                                <button class="mr-2 btn btn-primary" @click="Change">Change</button>
                                 <button class="btn btn-danger">Cancel</button>
                             </div>
                         </div>
@@ -36,6 +36,7 @@ import '../../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../../../../node_modules/bootstrap/dist/js/bootstrap.esm';
 import { Modal } from '../../../../node_modules/bootstrap/dist/js/bootstrap.esm';
 import { RolePagination } from '../../../utils/axios';
+let modalShow;
 export default {
     data() {
        return {
@@ -43,26 +44,34 @@ export default {
           optionValues: []
        };
     },
+    props:{
+        photo:"",
+        currentRoleName:"",
+        userName:"",
+        userId:"",
+    },
     created() {
         this.loadData();
     },
     methods: {
         OpenModal() {
-            let modalShow = new Modal(
+            this.modalShow = new Modal(
                 document.getElementById('modal-edit'),
             );
-            modalShow.show();
+            this.modalShow.show();
+            console.log(this.modalShow);
         },
         CloseModal() {
-
+            this.modalShow.hide();
         },
         Change(){
-            if(this.selected)
-            {
-                console.log("True")
-            }else{
-                console.log("false");
-            }
+          if(this.selected)
+          {
+             //const a 
+
+          }else{
+                
+          }
         },
         async loadData() {
            const response = await RolePagination(1,100);

@@ -10,7 +10,7 @@
         <ul class="list-group ml-2 mr-2">
           <li v-for="item in filteredUsers" :key="item.id" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-2">
             <div class="d-flex align-items-center">
-              <img :src="item.avatar" class="img-fluid rounded-circle user-image" alt="Avatar" />
+              <img :src="item.avatar" class="img-fluid rounded-circle user-image" alt="selectedUserName" />
               <div class="ml-3">
                 <p class="mb-1 fw-bold user-name">{{ item.name }}</p>
                 <p class="mb-1 text-dark">{{ "Role: " + item.role.name }}</p>
@@ -24,7 +24,7 @@
           </li>
         </ul>
       </div>
-      <editVue :userName="selectedUserName" ref="editVueRef"></editVue>
+      <editVue :userName="selectedUserName" :photo="photo" :currentRoleName="currentRole.name" ref="editVueRef"></editVue>
     </div>
   </template>
   
@@ -37,6 +37,8 @@
     data() {
       return {
         items: {},
+        currentPhoto:'',
+        currentRole:'',
         searchText: '',
         UserList: [],
         selectedUserId:"",
@@ -58,6 +60,8 @@
       },
       editUser(item) {
         this.selectedUserId = item.id;
+        this.photo=item.avatar;
+        this.currentRole=item.role;
         this.selectedUserName = item.name;
         this.$refs.editVueRef.OpenModal();
       },

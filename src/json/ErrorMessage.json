@@ -1,0 +1,25 @@
+{
+    "Register": {
+      "ServerError": "Axios module ::: Register func : Данные не вернулись с сервера. Проверь роут и правильность передаваемых параметров!",
+      "OtherError": "Axios module ::: Register func : Произошла другая ошибка."
+    },
+    "UserPagination": {
+      "InvalidArgumentType": "Axios module ::: UserPagination : Тип входящего аргумента должен быть типа number!",
+      "ServerError": "Axios module ::: UserPagination : Данные не вернулись с сервера. Проверь роут и правильность передаваемых параметров!",
+      "OtherError": "Axios module ::: UserPagination : Произошла другая ошибка."
+    },
+    "RolePagination": {
+      "InvalidArgumentType": "Axios module ::: RolePagination func : Тип входящего аргумента должен быть типа number!",
+      "ServerError": "Axios module ::: RolePagination func : Данные не вернулись с сервера. Проверь роут и правильность передаваемых параметров!",
+      "OtherError": "Axios module ::: RolePagination func : Произошла другая ошибка."
+    },
+    "ChangeRole": {
+      "ServerError": "Axios module ::: ChangeRole func : Данные не вернулись с сервера. Проверь роут и правильность передаваемых параметров!",
+      "OtherError": "Axios module ::: ChangeRole func : Произошла другая ошибка."
+    },
+    "GetUserLetters": {
+      "ServerError": "Axios module ::: GetUserLetters : Данные не вернулись с сервера.",
+      "OtherError": "Axios module ::: GetUserLetters : Произошла другая ошибка."
+    }
+  }
+  
