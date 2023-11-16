@@ -1,25 +1,17 @@
 {
-    "Register": {
-      "ServerError": "Axios module ::: Register func : Данные не вернулись с сервера. Проверь роут и правильность передаваемых параметров!",
-      "OtherError": "Axios module ::: Register func : Произошла другая ошибка."
-    },
-    "UserPagination": {
-      "InvalidArgumentType": "Axios module ::: UserPagination : Тип входящего аргумента должен быть типа number!",
-      "ServerError": "Axios module ::: UserPagination : Данные не вернулись с сервера. Проверь роут и правильность передаваемых параметров!",
-      "OtherError": "Axios module ::: UserPagination : Произошла другая ошибка."
-    },
-    "RolePagination": {
-      "InvalidArgumentType": "Axios module ::: RolePagination func : Тип входящего аргумента должен быть типа number!",
-      "ServerError": "Axios module ::: RolePagination func : Данные не вернулись с сервера. Проверь роут и правильность передаваемых параметров!",
-      "OtherError": "Axios module ::: RolePagination func : Произошла другая ошибка."
-    },
-    "ChangeRole": {
-      "ServerError": "Axios module ::: ChangeRole func : Данные не вернулись с сервера. Проверь роут и правильность передаваемых параметров!",
-      "OtherError": "Axios module ::: ChangeRole func : Произошла другая ошибка."
-    },
-    "GetUserLetters": {
-      "ServerError": "Axios module ::: GetUserLetters : Данные не вернулись с сервера.",
-      "OtherError": "Axios module ::: GetUserLetters : Произошла другая ошибка."
+  "AxiosError": {
+    "ServerError": "Data did not return from the server. Check the route, server availability, or the correctness of values in the passed parameters.",
+    "StatusCode": {
+      "BadRequest": "A validation error was detected: ",
+      "Unauthorized": "User is not authorized!",
+      "InternalServerError": "An internal server error was detected:"
     }
+  },
+  "ErrorWebApplication": {
+    "InvalidArgumentType": "The type of the incoming argument should be of type ",
+    "NullableArgumentType": "An attempt to pass a null value was detected."
+  },
+  "AuthError": {
+    "DeniedAction": "Access is denied for users with a role lower than 'user'."
   }
-  
+}

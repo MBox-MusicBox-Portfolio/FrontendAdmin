@@ -59,7 +59,6 @@ export default {
                 document.getElementById('modal-edit'),
             );
             this.modalShow.show();
-            console.log(this.modalShow);
         },
         CloseModal() {
             this.modalShow.hide();
@@ -75,7 +74,7 @@ export default {
         },
         async loadData() {
            const response = await RolePagination(1,100);
-           this.optionValues = response.value || []
+           this.optionValues = response || []
         }
     }
 };
