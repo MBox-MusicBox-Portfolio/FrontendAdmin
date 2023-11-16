@@ -2,15 +2,19 @@ import axios, { AxiosError } from "axios";
 import * as cookie from "./cookies";
 import SourceJson from './source.json';
 import {useToast} from 'vue-toastification';
+import ErrorJson from '../json/ErrorMessage.json'; 
+import { number } from "yup";
 
 let toast = useToast();
-let config = {
+
+// Authorization header
+let header = {
   headers: { 
-    'Authorization': cookie.GetCookie("JWTAdminKey") as string
+     'Authorization': cookie.GetCookie("JWTAdminKey") as string
   }
 }; 
 
-export async function Register(username: string, email: string, password: string) {
+export async function Register(username: string, email: string, password: string) : Promise<any> {
   const response = await axios.post(SourceJson.Auth.register, {
     Name: username,
     Email: email,
@@ -19,7 +23,7 @@ export async function Register(username: string, email: string, password: string
   return response;
 }
 
-export async function Auth(email: string, password: string) {
+export async function Auth(email: string, password: string) : Promise<any> {
   const response = await axios.post(SourceJson.Auth.login, {
     Email: email,
     Password: password,
@@ -27,84 +31,106 @@ export async function Auth(email: string, password: string) {
     return response;
 }
 
+/**
+ * Обработчик статус кодов 
+ * HTTP Status code handler 
+ * @param response 
+ * @returns JSON object or error string value
+ */
+async function HttpStatusCodeHandler(axiosReq:any) : Promise<any>
+{
+  switch(axiosReq.request.status)
+  {
+     case 200: return true; break;
+     case 400: 
+       const error = JSON.parse(axiosReq.request.response);
+       return `${ErrorJson.AxiosError.StatusCode.BadRequest} :  ${JSON.stringify(error.errors)}`; 
+     break;
+     case 401: 
+       return `${ErrorJson.AxiosError.StatusCode.Unauthorized} : ${axiosReq.response.data}` ; 
+     break;
+     case 500: 
+       return `${ErrorJson.AxiosError.StatusCode.InternalServerError} : ${JSON.stringify(error.response.data)} `;
+     break;
+  }
+}
 
 /**
  * Пагинация пользователей
+ * Pagination users
  * @param page 
  * @param size 
- * @returns 
+ * @returns array with users 
  */
-export async function UserPagination(page: Number, size: Number) {
-  try{
-    if(typeof page === 'number' && typeof size === 'number')
-    {
-      const response = await axios.get(SourceJson.Users.user_pagination + `?Page=${page}&Size=${size}`, config);
-      if (response)
-      {
-        return response;
+
+export async function UserPagination(page: number, size: number) : Promise<any> {
+    try {
+      if (typeof page === 'number' && typeof size === 'number') {
+        let status;
+             const response = await axios.get(SourceJson.Users.user_pagination + `?Page=${page}&Size=${size}`,header);
+             status = await HttpStatusCodeHandler(response) === true ? response.data : undefined;
+          return status.value;
       }else{
-        toast.error("Axios module ::: UserPagination : Данные не вернулись с сервера. Проверь роут и правильность передаваемых параметров!"); 
-        return;
+         toast.error("Axios module ::: UserPagination func: " + `${ErrorJson.ErrorWebApplication.InvalidArgumentType} number , number . Your types: ` + typeof page +" и " + typeof size );
       }
-    }else{
-        toast.error("Axios module ::: UserPagination : Тип входящего аргумента должен быть типа number!"); 
-        return ;
+    } catch (error: any) {
+        toast.error("Axios module ::: UserPagination func: " + await HttpStatusCodeHandler(error));
     }
-  }catch(err:any){
-       toast.error(`Axios module ::: UserPagination  exceptions: ${err.error}`); 
-       return;
-  }
-  
 }
 
 /**
  * Пагинация ролей 
-*/
+ * Pagination roles 
+ * @param Page 
+ * @param Size 
+ * @returns array with roles name
+ */
 
-export async function RolePagination(Page:number, Size:number) {
+export async function RolePagination(Page:number, Size:number) : Promise<any> {
   try{
     if(Page && typeof Page === 'number' && typeof Size === 'number')
     {
-      const response = await axios.get(SourceJson.RolePagination.role_pagination +`?Page=${Page}&Size=${Size}`,config);
-      if(response)
-      {
-        return response.data;
-      }else{
-        toast.error("Axios module ::: RolePagination func : Данные не вернулись с сервера. Проверь роут и правильность передаваемых параметров!"); 
-      } 
+      let status;
+      const response = await axios.get(SourceJson.RolePagination.role_pagination + `?Page=${Page}&Size=${Size}`, header);
+         status = await HttpStatusCodeHandler(response) === true ? response.data : undefined;
+      return status.value;
     }else{
-       toast.error("Axios module ::: RolePagination func : Тип входящего аргумента должен быть типа number!"); 
+       toast.error("Axios module ::: UserPagination func: " + `${ErrorJson.ErrorWebApplication.InvalidArgumentType} number , number . Your types: ` + typeof Page +" и " + typeof Size );
     }
-  }catch(err:any){
-       toast.error(`Axios module ::: RolePagination  exceptions: ${err}`); 
+  }catch(error:any){
+       toast.error(`Axios module ::: RolePagination  exceptions:` +  await HttpStatusCodeHandler(error)); 
   }
 }
 
 /**
  * Меняет роль пользователя. 
+ * Change user role
  * @param userId 
  * @param roleId 
  * @param roleName 
- * @returns 
+ * @return response or error object
  */
 
-export async function ChangeRole(userId:string, roleId:string, roleName: string)
+export async function ChangeRole(userId:string, roleId:string, roleName: string) : Promise<any>
 {
    try{
-      const response = await axios.post(SourceJson.ChangeRole.userRoleChange + `${userId}/changerole`,{"id": roleId, "name": roleName}, config);
-      if (response)
-      {
-        return response;
-      }else{
-        toast.error("Axios module ::: ChangeRole func : Данные не вернулись с сервера. Проверь роут и правильность передаваемых параметров!"); 
-      }
-   }catch(err:any){
-     return `Axios module ::: ChangeRole : ${err}`
+    if (typeof userId === 'string' && typeof roleId === 'string' && typeof roleName === 'string')
+    {
+      let status;
+      const response = await axios.post(SourceJson.ChangeRole.userRoleChange + `${userId}/changerole`,{"id": roleId, "name": roleName}, header);
+         status = await HttpStatusCodeHandler(response) === true ? response.data : undefined;
+      return status.errors;
+    }else{
+        toast.error("Axios module ::: UserPagination func: " + `${ErrorJson.ErrorWebApplication.InvalidArgumentType} string , string , string . Your types: ` + typeof userId +" " + typeof roleId + " " + typeof roleName );
+    }
+   }catch(error:any){
+      toast.error(`Axios module ::: ChangeRole func : ` +  await HttpStatusCodeHandler(error));
    }
 }
 
 /**
- * Получает первые две буквы имени и генерит картинку по умолчанию
+ * Image generation 
+ * Generating images with the first two letters of the username
  * @param firstLetterOfUserName 
  * @returns 
  */

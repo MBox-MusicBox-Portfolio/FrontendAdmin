@@ -31,6 +31,7 @@
   <script>
   import editVue from '../../components/modals/edit/edit.vue';
   import UserStatus from '../../json/UserStatus.json';
+  
   import * as request from '../../utils/axios';
   
   export default {
@@ -52,7 +53,7 @@
       async loadUser() {
         try {
           const response = await request.UserPagination(1,100);
-          this.UserList = response.data.value || [];
+          this.UserList = response || [];
           //await this.setDefaultImage();
         } catch (error) {
           console.error("Error loading user data:", error);
