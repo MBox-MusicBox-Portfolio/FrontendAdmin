@@ -54,9 +54,9 @@ export function RemoveCookie(key : string) : void {
   {
       cookie.removeCookie(key);
   }else{
-    console.error("Cookie utils ::: GetCookie function : " , `${"Empty params"}`); 
+    console.error("Cookie utils ::: RemoveCookie function : " , `${"Empty params"}`); 
   }
  }catch(err){
-    console.error("Cookie utils ::: GetCookie function : " , `${err}`); 
+    console.error("Cookie utils ::: RemoveCookie function : " , `${err}`); 
  } 
 }
