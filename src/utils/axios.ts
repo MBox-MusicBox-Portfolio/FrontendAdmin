@@ -3,7 +3,7 @@ import * as cookie from "./cookies";
 import SourceJson from './source.json';
 import {useToast} from 'vue-toastification';
 import ErrorJson from '../json/ErrorMessage.json'; 
-import { number } from "yup";
+import { sleep } from "./helpers";
 
 let toast = useToast();
 
@@ -13,23 +13,6 @@ let header = {
      'Authorization': cookie.GetCookie("JWTAdminKey") as string
   }
 }; 
-
-export async function Register(username: string, email: string, password: string) : Promise<any> {
-  const response = await axios.post(SourceJson.Auth.register, {
-    Name: username,
-    Email: email,
-    Password: password,
-  });
-  return response;
-}
-
-export async function Auth(email: string, password: string) : Promise<any> {
-  const response = await axios.post(SourceJson.Auth.login, {
-    Email: email,
-    Password: password,
-  });
-    return response;
-}
 
 /**
  * Обработчик статус кодов 
@@ -41,17 +24,54 @@ async function HttpStatusCodeHandler(axiosReq:any) : Promise<any>
 {
   switch(axiosReq.request.status)
   {
-     case 200: return true; break;
+     case 200: return true;
      case 400: 
        const error = JSON.parse(axiosReq.request.response);
        return `${ErrorJson.AxiosError.StatusCode.BadRequest} :  ${JSON.stringify(error.errors)}`; 
      break;
      case 401: 
+       const troublers = JSON.parse(axiosReq.request.response);
        return `${ErrorJson.AxiosError.StatusCode.Unauthorized} : ${axiosReq.response.data}` ; 
      break;
-     case 500: 
-       return `${ErrorJson.AxiosError.StatusCode.InternalServerError} : ${JSON.stringify(error.response.data)} `;
+     case 403: 
+       const errorAuth = JSON.parse(axiosReq.request.response);
+       return `${ErrorJson.AxiosError.StatusCode.Unauthorized} : ${JSON.stringify(errorAuth.value)}`;
      break;
+     case 502: 
+       return `${ErrorJson.AxiosError.StatusCode.InternalServerError} : ${"Bad gateway"} `;
+     break;
+  }
+}
+
+/* -- Не удалять
+export async function Register(username: string, email: string, password: string) : Promise<any> {
+  const response = await axios.post(SourceJson.Auth.register, {
+    Name: username,
+    Email: email,
+    Password: password,
+  });
+  return response;
+}
+*/
+
+/**
+ * Authorization for admin user's
+ * Авторизация для админ персонала 
+ * @param email 
+ * @param password 
+ * @returns JSON object with response
+ */
+export async function Auth(email: string, password: string) : Promise<any> {
+  try{
+    if(typeof email === 'string' && typeof password === 'string'){
+      let status;
+         const response = await axios.post(SourceJson.Auth.login, {Email: email, Password: password});
+         status = await HttpStatusCodeHandler(response) === true ? response: undefined;
+      return status;
+    }
+  }catch(error:any){
+     toast.error("Axios module ::: Auth func" + await HttpStatusCodeHandler(error));
+    // return(error.response.data.value);
   }
 }
 
@@ -117,11 +137,11 @@ export async function ChangeRole(userId:string, roleId:string, roleName: string)
     if (typeof userId === 'string' && typeof roleId === 'string' && typeof roleName === 'string')
     {
       let status;
-      const response = await axios.post(SourceJson.ChangeRole.userRoleChange + `${userId}/changerole`,{"id": roleId, "name": roleName}, header);
+      let response = await axios.post(SourceJson.ChangeRole.userRoleChange + `${userId}/changerole`,{id: roleId, name: roleName}, header);
          status = await HttpStatusCodeHandler(response) === true ? response.data : undefined;
-      return status.errors;
+       return status.success;
     }else{
-        toast.error("Axios module ::: UserPagination func: " + `${ErrorJson.ErrorWebApplication.InvalidArgumentType} string , string , string . Your types: ` + typeof userId +" " + typeof roleId + " " + typeof roleName );
+        toast.error("Axios module ::: ChangeRole func: " + `${ErrorJson.ErrorWebApplication.InvalidArgumentType} string , string , string . Your types: ` + typeof userId +" " + typeof roleId + " " + typeof roleName );
     }
    }catch(error:any){
       toast.error(`Axios module ::: ChangeRole func : ` +  await HttpStatusCodeHandler(error));

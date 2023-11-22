@@ -14,6 +14,6 @@
         "role_pagination": "http://localhost/api/admin/role/pagination"
     },
     "ChangeRole":{
-        "userRoleChange":"http://localhost/api/admin/"
+        "userRoleChange":"http://localhost/api/admin/users/"
     }
 }
