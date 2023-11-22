@@ -11,7 +11,9 @@
     "InvalidArgumentType": "The type of the incoming argument should be of type ",
     "NullableArgumentType": "An attempt to pass a null value was detected."
   },
-  "AuthError": {
-    "DeniedAction": "Access is denied for users with a role lower than 'user'."
+  "AuthMessage": {
+    "DeniedAction": "Access is denied for users with a role lower than 'user'.",
+    "LoginSucceded": "Login succeeded!",
+    "ConfirmMail" : "Confirm your email"
   }
 }
