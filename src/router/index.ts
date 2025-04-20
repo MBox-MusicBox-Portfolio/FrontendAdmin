@@ -1,142 +1,93 @@
-import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router';
-import store from '@/store/index';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import AuthLayout from '../layouts/AppLayout.vue'
+import AppLayout from '../layouts/AppLayout.vue'
 
-import Main from '@/modules/main/main.vue';
-import Login from '@/modules/login/login.vue';
-import Register from '@/modules/register/register.vue';
-
-import Dashboard from '@/pages/dashboard/dashboard.vue';
-import Profile from '@/pages/profile/profile.vue';
-import ForgotPassword from '@/modules/forgot-password/forgot-password.vue';
-import RecoverPassword from '@/modules/recover-password/recover-password.vue';
-import PrivacyPolicy from '@/modules/privacy-policy/privacy-policy.vue';
-
-import User from '@/pages/user/User.vue';
-import Group from '@/pages/group/group.vue'
-
-import {
-    getAuthStatus,
-    getFacebookLoginStatus,
-    GoogleProvider
-} from '@/utils/oidc-providers';
+import RouteViewComponent from '../layouts/RouterBypass.vue'
 
 const routes: Array<RouteRecordRaw> = [
-    {
-        path: '/admin',
-        name: 'Main',
-        component: Main,
-        meta: {
-            requiresAuth: true
-        },
-        children: [
-            {
-                path: 'profile',
-                name: 'Profile',
-                component: Profile,
-                meta: {
-                    requiresAuth: true
-                }
-            },
-            {
-                path: '',
-                name: 'Dashboard',
-                component: Dashboard,
-                meta: {
-                    requiresAuth: true
-                },
-            },
-            {
-                path: 'user',
-                name: 'user',
-                component: User,
-                meta: {
-                    requiresAuth: true
-                }
-            },
-            {
-                path: 'group',
-                name: 'group',
-                component: Group,
-                meta: {
-                    requiresAuth: true
-                }
-            },
-        ]
-    },
-    {
-        path: '/admin/login',
-        name: 'Login',
-        component: Login,
-        meta: {
-            requiresUnauth: true
-        }
-    },
-    {
-        path: '/register',
-        name: 'Register',
-        component: Register,
-        meta: {
-            requiresUnauth: true
-        }
-    },
-    {
-        path: '/forgot-password',
-        name: 'ForgotPassword',
-        component: ForgotPassword,
-        meta: {
-            requiresUnauth: true
-        }
-    },
-    {
-        path: '/recover-password',
-        name: 'RecoverPassword',
-        component: RecoverPassword,
-        meta: {
-            requiresUnauth: true
-        }
-    },
-    {
-        path: '/privacy-policy',
-        name: 'RecoverPassword',
-        component: PrivacyPolicy
-    }
-];
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: { name: 'dashboard' },
+  },
+  {
+    name: 'admin',
+    path: '/',
+    component: AppLayout,
+    redirect: { name: 'dashboard' },
+    children: [
+      {
+        name: 'dashboard',
+        path: 'dashboard',
+        component: () => import('../pages/admin/dashboard/Dashboard.vue'),
+      },
+      {
+        name: 'settings',
+        path: 'settings',
+        component: () => import('../pages/settings/Settings.vue'),
+      },
+      {
+        name: 'preferences',
+        path: 'preferences',
+        component: () => import('../pages/preferences/Preferences.vue'),
+      },
+      {
+        name: 'users',
+        path: 'users',
+        component: () => import('../pages/users/UsersPage.vue'),
+      },
+    ],
+  },
+  {
+    path: '/auth',
+    component: AuthLayout,
+    children: [
+      {
+        name: 'login',
+        path: 'login',
+        component: () => import('../pages/auth/Login.vue'),
+      },
+      {
+        name: 'signup',
+        path: 'signup',
+        component: () => import('../pages/auth/Signup.vue'),
+      },
+      {
+        name: 'recover-password',
+        path: 'recover-password',
+        component: () => import('../pages/auth/RecoverPassword.vue'),
+      },
+      {
+        name: 'recover-password-email',
+        path: 'recover-password-email',
+        component: () => import('../pages/auth/CheckTheEmail.vue'),
+      },
+      {
+        path: '',
+        redirect: { name: 'login' },
+      },
+    ],
+  },
+  {
+    name: '404',
+    path: '/404',
+    component: () => import('../pages/404.vue'),
+  },
+]
 
 const router = createRouter({
-    history: createWebHistory('/'),
-    routes
-});
-
-router.beforeEach(async (to, from, next) => {
-    console.log(to, from);
-    let storedAuthentication = store.getters['auth/authentication'];
-
-    if (!storedAuthentication) {
-        storedAuthentication = await checkSession();
+  history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
     }
-
-    if (Boolean(to.meta.requiresAuth) && Boolean(!storedAuthentication)) {
-        return next('/admin/login');
+    // For some reason using documentation example doesn't scroll on page navigation.
+    if (to.hash) {
+      return { el: to.hash, behavior: 'smooth' }
+    } else {
+      window.scrollTo(0, 0)
     }
-    return next();
-});
+  },
+  routes,
+})
 
-export default router;
-
-export async function checkSession() {
-    try {
-        let responses: any = await Promise.all([
-            getFacebookLoginStatus(),
-            GoogleProvider.getUser(),
-            getAuthStatus()
-        ]);
-
-        responses = responses.filter((r: any) => Boolean(r));
-
-        if (responses && responses.length > 0) {
-            return responses[0];
-        }
-    } catch (error: any) {
-        return;
-    }
-}
+export default router

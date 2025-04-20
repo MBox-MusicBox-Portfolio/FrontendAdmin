@@ -1,35 +1,20 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "module": "esnext",
-        "strict": true,
-        "jsx": "preserve",
-        "importHelpers": true,
-        "moduleResolution": "node",
-        "experimentalDecorators": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "sourceMap": false,
-        "baseUrl": ".",
-        "types": ["webpack-env", "jest"],
-        "paths": {
-            "@/*": ["src/*"],
-            "js-cookie": ["node_modules/js-cookie"]
-        },
-        "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
-        "resolveJsonModule": true,
-        "strictNullChecks": false,
-        "noEmit": true
-    },
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "src/**/*.ts", 
-        "node_modules/js-cookie/**/*.d.ts",
-        "src/**/*.vue",
-        "tests/**/*.ts",
-        "tests/**/*.tsx",
-        "src/utils/axios.ts"],
-    "exclude": ["node_modules"]
+  "compilerOptions": {
+    "noEmit": true,
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
+    "types": ["vite/client"],
+    "allowJs": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "vite.config.ts", "node_modules/vuestic-ui"],
+  "exclude": ["node_modules/**/*"]
 }
