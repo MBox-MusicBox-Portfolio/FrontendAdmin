@@ -1,7 +1,0 @@
-{
-    "User" : "text-primary",
-    "Musician" : "text-primary",
-    "Producer" : "text-warning",
-    "Blocked" : "text-dark",
-    "Admin" : "text-danger"
-}

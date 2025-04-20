@@ -1,45 +1,28 @@
-import {createApp} from 'vue';
-import App from './app/app.vue';
-import router from './router';
-import store from './store';
-import {i18n} from './translation';
+import { createApp } from 'vue'
+import i18n from './i18n'
+import { createVuestic } from 'vuestic-ui'
+import { createGtm } from '@gtm-support/vue-gtm'
 
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
+import stores from './stores'
+import router from './router'
+import vuesticGlobalConfig from './services/vuestic-ui/global-config'
+import App from './App.vue'
 
-import Toast, {PluginOptions} from 'vue-toastification';
-import {ProfabricComponents} from '@profabric/vue-components';
+const app = createApp(App)
 
-import './index.scss';
-import {faEnvelope, faLock} from '@fortawesome/free-solid-svg-icons';
+app.use(stores)
+app.use(router)
+app.use(i18n)
+app.use(createVuestic({ config: vuesticGlobalConfig }))
 
-library.add(faEnvelope, faLock);
+if (import.meta.env.VITE_APP_GTM_ENABLED) {
+  app.use(
+    createGtm({
+      id: import.meta.env.VITE_APP_GTM_KEY,
+      debug: false,
+      vueRouter: router,
+    }),
+  )
+}
 
-const options: PluginOptions = {
-    timeout: 3000,
-    closeOnClick: true,
-    pauseOnFocusLoss: true,
-    pauseOnHover: true,
-    draggable: true,
-    draggablePercent: 0.6,
-    showCloseButtonOnHover: false,
-    hideProgressBar: false,
-    closeButton: 'button',
-    icon: true,
-    rtl: false
-};
-
-(window as any).PF = {
-    config: {
-        mode: 'bs4'
-    }
-};
-
-createApp(App)
-    .component('font-awesome-icon', FontAwesomeIcon)
-    .use(store)
-    .use(router)
-    .use(Toast, options)
-    .use(i18n as any)
-    .use(ProfabricComponents as any)
-    .mount('#app');
+app.mount('#app')

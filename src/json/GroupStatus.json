@@ -1,6 +1,0 @@
-{
-    "Approved" : "text-success",
-    "Pending" : "text-warning",
-    "Rejected" : "text-danger",
-    "Blocked" : "text-dark"
-}
